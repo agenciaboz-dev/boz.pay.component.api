@@ -27,7 +27,7 @@ const get = async (data: GetOrder, socket: Socket) => {
     }
 }
 
-const pay = async (order: { id: number; total: number; method: PaymentMethod } & (OrderForm | CardOrderForm), socket: Socket) => {
+const pay = async (order: { id: number; total: number; method: PaymentMethod } & (PayForm | CardOrderForm), socket: Socket) => {
     try {
         if (order.method == "card") {
             if ((order as CardOrderForm).type == "debit" && !(order as CardOrderForm).auth) {
