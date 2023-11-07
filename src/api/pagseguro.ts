@@ -6,14 +6,6 @@ import { getDueDate } from "../scripts/formatDate"
 
 const prisma = new PrismaClient()
 
-// const sandbox = true
-
-// if (sandbox) {
-//     console.warn('pagseguro on sandbox mode')
-// }
-
-
-
 // returns PAID
 // Número: 4539620659922097
 // Cód. de Seg.: 123
