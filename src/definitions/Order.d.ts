@@ -35,10 +35,13 @@ declare interface PersonalDataForm {
 
 declare interface AddressForm {
     address: string
+    number: string
     district: string
     city: string
     state: string
     postcode: string
+    number: string
+    complement?: string
 }
 
 declare interface BillShippingForm {

@@ -24,8 +24,11 @@ const order = {
                 district: data.shipping.address.district,
                 postcode: data.shipping.address.postcode,
                 state: data.shipping.address.state,
+                complement: data.shipping.address.complement,
+                number: data.shipping.address.number,
             },
         })
+        console.log("created shipping address")
         const shippingPersonalData = await prisma.personalData.create({
             data: {
                 cpf: data.shipping.personalData.cpf,
@@ -34,6 +37,7 @@ const order = {
                 phone: data.shipping.personalData.phone,
             },
         })
+        console.log("created shipping personal data")
         const shipping = await prisma.shipping.create({
             data: {
                 addressId: shippingAddress.id,
@@ -41,6 +45,7 @@ const order = {
             },
         })
 
+        console.log("created shipping")
         const billingAddress = await prisma.address.create({
             data: {
                 address: data.billing.address.address,
@@ -48,8 +53,11 @@ const order = {
                 district: data.billing.address.district,
                 postcode: data.billing.address.postcode,
                 state: data.billing.address.state,
+                complement: data.billing.address.complement,
+                number: data.billing.address.number,
             },
         })
+        console.log("created billing address")
         const billingPersonalData = await prisma.personalData.create({
             data: {
                 cpf: data.billing.personalData.cpf,
@@ -59,6 +67,7 @@ const order = {
             },
         })
 
+        console.log("created billing personal data")
         const billing = await prisma.billing.create({
             data: {
                 addressId: billingAddress.id,
@@ -66,6 +75,7 @@ const order = {
             },
         })
 
+        console.log("created billing")
         const order = await prisma.order.create({
             data: {
                 status: data.order.status,
@@ -91,6 +101,7 @@ const order = {
             include: inclusions.order,
         })
 
+        console.log("created order")
         return order
     },
 }

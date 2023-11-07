@@ -5,19 +5,25 @@ import pagseguro from "../api/pagseguro"
 import frenet from "../api/frenet"
 
 const get = async (data: GetOrder, socket: Socket) => {
-    const order = await databaseHandler.order.find(data)
-    socket.emit("order", order)
+    console.log(data)
+    try {
+        const order = await databaseHandler.order.find(data)
+        socket.emit("order", order)
 
-    if (order) {
-        try {
-            const quoteResponse = await frenet.quote(order)
-            const quoteList = quoteResponse.ShippingSevicesArray
-            // console.log(quoteResponse)
-            socket.emit("quote", quoteList)
-        } catch (error) {
-            console.log(error)
-            socket.emit("quote", [])
+        if (order) {
+            try {
+                const quoteResponse = await frenet.quote(order)
+                const quoteList = quoteResponse.ShippingSevicesArray
+                // console.log(quoteResponse)
+                socket.emit("quote", quoteList)
+            } catch (error) {
+                console.log(error)
+                socket.emit("quote", [])
+            }
         }
+    } catch (error) {
+        console.log(error)
+        socket.emit("error", error)
     }
 }
 

@@ -48,6 +48,8 @@ model Address {
     city            String
     state           String
     postcode        String
+    number          String
+    complement      String?
 
     billing         Billing?
     shipping        Shipping?

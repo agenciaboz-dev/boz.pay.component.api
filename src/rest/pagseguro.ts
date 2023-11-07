@@ -33,18 +33,11 @@ router.post("/webhook", async (request, response, next) => {
 
         writeFileSync(`logs/webhook-${data.reference_id}.txt`, JSON.stringify(data, null, 4))
 
-        await prisma.order.update({ data: { pag_status: charge.status }, where: { id: Number(data.reference_id) } })
+        await prisma.order.update({ data: { status: charge.status }, where: { id: Number(data.reference_id) } })
         io.emit("pagseguro:paid", { id: Number(data.reference_id), charge })
 
         if (data.charges[0].status == "PAID") {
-            woocommerce
-                .updateOrderStatus(Number(data.reference_id), "processing")
-                .then((data) => {
-                    // console.log(data)
-                })
-                .catch((error) => {
-                    console.log(error)
-                })
+            // pago
         }
     }
 
