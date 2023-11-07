@@ -61,7 +61,7 @@ const order = (order: { id: number; total: number; method: PaymentMethod } & (Pa
                 unit_amount: Math.round(order.total * 100),
             },
         ],
-        notification_urls: ["https://app.agenciaboz.com.br:4108/api/pagseguro/webhook"],
+        notification_urls: ["https://app.agenciaboz.com.br:4118/api/pagseguro/webhook"],
 
         qr_codes: order.method == "pix" ? [{ amount: { value: Math.round(order.total * 100) } }] : undefined,
         charges:
