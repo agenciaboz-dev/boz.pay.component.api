@@ -4,8 +4,8 @@ import woocommerce from "../api/woocommerce"
 import pagseguro from "../api/pagseguro"
 import frenet from "../api/frenet"
 
-const get = async (id: number, socket: Socket) => {
-    const order = await databaseHandler.order.find(Number(id))
+const get = async (data: GetOrder, socket: Socket) => {
+    const order = await databaseHandler.order.find(data)
     socket.emit("order", order)
 
     if (order) {

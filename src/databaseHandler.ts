@@ -3,33 +3,90 @@ import { Billing, Order, PrismaClient, Shipping } from "@prisma/client"
 const prisma = new PrismaClient()
 
 const inclusions = {
-    order: { billing: true, shipping: true },
+    order: {
+        billing: { include: { address: true, personalData: true } },
+        shipping: { include: { address: true, personalData: true } },
+        products: true,
+    },
 }
 
 const order = {
-    find: async (id: number) => await prisma.order.findUnique({ where: { id }, include: inclusions.order }),
-    new: async (data: Order & { shipping: Shipping; billing: Billing; meta_data: { id: string; key: string; value: string }[] }) => {
-        const shipping = await prisma.shipping.create({
+    find: async (data: GetOrder) =>
+        await prisma.order.findFirst({
+            where: { AND: [{ referenceId: data.referenceId.toString() }, { store: data.store }] },
+            include: inclusions.order,
+        }),
+    new: async (data: { order: OrderForm; billing: BillShippingForm; shipping: BillShippingForm; products: ProductForm[] }) => {
+        const shippingAddress = await prisma.address.create({
             data: {
-                ...data.shipping,
-                cpf: data.meta_data.find((meta) => meta.key == "_billing_cpf")?.value || "",
-                district: data.meta_data.find((meta) => meta.key == "_shipping_neighborhood")?.value || "",
-                number: data.meta_data.find((meta) => meta.key == "_shipping_number")?.value || "",
+                address: data.shipping.address.address,
+                city: data.shipping.address.city,
+                district: data.shipping.address.district,
+                postcode: data.shipping.address.postcode,
+                state: data.shipping.address.state,
             },
         })
-        const billing = await prisma.billing.create({ data: data.billing })
+        const shippingPersonalData = await prisma.personalData.create({
+            data: {
+                cpf: data.shipping.personalData.cpf,
+                email: data.shipping.personalData.email,
+                name: data.shipping.personalData.name,
+                phone: data.shipping.personalData.phone,
+            },
+        })
+        const shipping = await prisma.shipping.create({
+            data: {
+                addressId: shippingAddress.id,
+                personalDataId: shippingPersonalData.id,
+            },
+        })
+
+        const billingAddress = await prisma.address.create({
+            data: {
+                address: data.billing.address.address,
+                city: data.billing.address.city,
+                district: data.billing.address.district,
+                postcode: data.billing.address.postcode,
+                state: data.billing.address.state,
+            },
+        })
+        const billingPersonalData = await prisma.personalData.create({
+            data: {
+                cpf: data.billing.personalData.cpf,
+                email: data.billing.personalData.email,
+                name: data.billing.personalData.name,
+                phone: data.billing.personalData.phone,
+            },
+        })
+
+        const billing = await prisma.billing.create({
+            data: {
+                addressId: billingAddress.id,
+                personalDataId: billingPersonalData.id,
+            },
+        })
+
         const order = await prisma.order.create({
             data: {
-                id: data.id,
-                status: data.status,
-                customer_id: data.customer_id,
-                cart_hash: data.cart_hash,
-                date_created: data.date_created,
-                date_modified: data.date_modified,
-                order_key: data.order_key,
-                total: data.total,
-                shipping_id: shipping.id,
-                billing_id: billing.id,
+                status: data.order.status,
+                customerId: data.order.customerId,
+                dateCreated: data.order.dateCreated,
+                dateModified: data.order.dateModified,
+                total: data.order.total,
+                referenceId: data.order.referenceId,
+                store: data.order.store,
+                shippingId: shipping.id,
+                billingId: billing.id,
+                products: {
+                    createMany: {
+                        data: data.products.map((item) => ({
+                            name: item.name,
+                            price: item.price,
+                            quantity: item.quantity,
+                            referenceId: item.referenceId.toString(),
+                        })),
+                    },
+                },
             },
             include: inclusions.order,
         })

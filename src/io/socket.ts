@@ -26,6 +26,6 @@ export const handleSocket = (socket: Socket) => {
         console.log(`disconnected: ${socket.id}`)
     })
 
-    socket.on("order:get", (id) => order.get(id, socket))
+    socket.on("order:get", (data) => order.get(data, socket))
     socket.on("order:pay", (data) => order.pay(data, socket))
 }

@@ -9,59 +9,81 @@ datasource db {
 }
 
 model Order {
-    id              Int         @id
+    id              Int         @id @default(autoincrement())
+    referenceId     String
+    store           String
     status          String
-    date_created    String
-    date_modified   String
-    total           String
-    customer_id     Int
-    order_key       String
-    cart_hash       String
+    dateCreated     String
+    dateModified    String
+    total           Float
 
-    pag_status      String      @default("waiting")
-    
+    customerId      String?
     pag_error       String?
 
-    billing_id      Int         @unique
-    shipping_id     Int         @unique
+    billingId       Int         @unique @map("billing_id")
+    shippingId      Int         @unique @map("shipping_id")
 
-    billing         Billing     @relation(fields: [billing_id], references: [id])
-    shipping        Shipping     @relation(fields: [shipping_id], references: [id])
+    billing         Billing     @relation(fields: [billingId], references: [id])
+    shipping        Shipping     @relation(fields: [shippingId], references: [id])
 
+    products        Product[]
+
+}
+
+model Product {
+    id              Int         @id @default(autoincrement())
+    name            String
+    price           Float
+    quantity        Int
+    referenceId     String
+
+    orderId         Int         
+    order           Order       @relation(fields: [orderId], references: [id])
+}
+
+model Address {
+    id              Int         @id @default(autoincrement())
+    address         String
+    district        String
+    city            String
+    state           String
+    postcode        String
+
+    billing         Billing?
+    shipping        Shipping?
+}
+
+model PersonalData {
+    id              Int         @id @default(autoincrement())
+    name            String
+    cpf             String
+    phone           String
+    email           String
+
+    billing         Billing?
+    shipping        Shipping?
 }
 
 model Billing {
     id              Int         @id @default(autoincrement())
-    first_name      String
-    last_name       String
-    company         String
-    address_1       String
-    address_2       String
-    city            String
-    state           String
-    postcode        String
-    country         String
-    email           String
-    phone           String
-
+    
     order           Order?
+
+    personalDataId  Int         @unique
+    personalData    PersonalData @relation(fields: [personalDataId], references: [id])
+
+    addressId       Int         @unique
+    address         Address     @relation(fields: [addressId], references: [id])
 }
 
 model Shipping {
     id              Int         @id @default(autoincrement())
-    first_name      String
-    last_name       String
-    company         String
-    address_1       String
-    address_2       String
-    city            String
-    state           String
-    postcode        String
-    country         String
-    phone           String
-    district        String      @default("")
-    cpf             String      @default("")
-    number          String      @default("")
 
     order           Order?
+
+    personalDataId  Int         @unique
+    personalData    PersonalData @relation(fields: [personalDataId], references: [id])
+
+    addressId       Int         @unique
+    address         Address     @relation(fields: [addressId], references: [id])
 }
