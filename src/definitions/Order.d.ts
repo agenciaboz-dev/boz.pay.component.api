@@ -1,6 +1,6 @@
 declare type PaymentMethod = "card" | "pix" | "boleto"
 
-declare interface CardOrderForm extends OrderForm {
+declare interface CardOrderForm extends PayForm {
     encrypted: string
     expiry: string
     cvv: string
@@ -9,6 +9,25 @@ declare interface CardOrderForm extends OrderForm {
     installments: number
 
     auth?: string
+}
+
+declare interface PayForm {
+    id: number
+    method: PaymentMethod
+    total: string
+    encrypted: string
+    store: string
+    name: string
+    cpf: string
+    phone: string
+    email: string
+    postcode: string
+    address: string
+    city: string
+    state: string
+    complement: string
+    district: string
+    number: string
 }
 
 declare interface OrderForm {

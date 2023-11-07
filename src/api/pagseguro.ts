@@ -45,7 +45,7 @@ let session: PagseguroSession | undefined
 
 const getSession = () => session
 
-const order = (order: { id: number; total: number; method: PaymentMethod } & (OrderForm | CardOrderForm), socket: Socket) => {
+const order = (order: { id: number; total: number; method: PaymentMethod } & (PayForm | CardOrderForm), socket: Socket) => {
     console.log(order)
     const pag_order: PagseguroOrder = {
         reference_id: order.id.toString(),
@@ -151,7 +151,7 @@ const order = (order: { id: number; total: number; method: PaymentMethod } & (Or
             await prisma.order.update({
                 where: { id: Number(order.id) },
                 data: {
-                    pag_status: "error",
+                    status: "error",
                     pag_error: error.response.data.error_messages?.map((error: any) => error.description).toString() || "erro desconhecido",
                 },
             })
