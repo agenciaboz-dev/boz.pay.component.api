@@ -6,18 +6,13 @@ import { getDueDate } from "../scripts/formatDate"
 
 const prisma = new PrismaClient()
 
-const sandbox = true
+// const sandbox = true
 
-if (sandbox) {
-    console.warn('pagseguro on sandbox mode')
-}
+// if (sandbox) {
+//     console.warn('pagseguro on sandbox mode')
+// }
 
-const api = axios.create({
-    baseURL: sandbox ? "https://sandbox.api.pagseguro.com" : "https://api.pagseguro.com",
-    timeout: 1000 * 10,
-})
 
-const token = sandbox ? "1BD9D2D2181B4660BAFC9426CA5A63A9" : "5e137c4a-acd6-433a-83a7-736815c6995b0ad8f02a47329494fac489b021d5ab384b54-9b9f-4140-b4cf-4675e700a829" 
 
 // returns PAID
 // Número: 4539620659922097
@@ -39,13 +34,18 @@ const token = sandbox ? "1BD9D2D2181B4660BAFC9426CA5A63A9" : "5e137c4a-acd6-433a
 // fail - not supported (need to handle)
 // 4000000000002719
 
-const headers = { Authorization: token }
 
 let session: PagseguroSession | undefined
 
 const getSession = () => session
 
 const order = (order: { id: number; total: number; method: PaymentMethod } & (PayForm | CardOrderForm), socket: Socket) => {
+    const api = axios.create({
+        baseURL: order.pagseguro.sandbox ? "https://sandbox.api.pagseguro.com" : "https://api.pagseguro.com",
+        timeout: 1000 * 10,
+    })
+    const headers = { Authorization: order.pagseguro.token }
+
     console.log(order)
     const pag_order: PagseguroOrder = {
         reference_id: order.id.toString(),
@@ -158,22 +158,17 @@ const order = (order: { id: number; total: number; method: PaymentMethod } & (Pa
         })
 }
 
-const pixPay = (order: any, callback: Function) =>
-    api.post("/pix/pay/" + order.id, { status: "PAID", tx_id: order.id }, { headers }).then((response) => {
-        callback(response)
+const auth3ds = async (data: PagseguroCreds) => {
+    const api = axios.create({
+        baseURL: data.sandbox ? "https://sandbox.api.pagseguro.com" : "https://api.pagseguro.com",
+        timeout: 1000 * 10,
     })
 
-const get = (order: any, callback: Function) =>
-    api.get("/orders/" + order.id, { headers }).then((response) => {
-        callback(response)
-    })
-
-const auth3ds = async () => {
-    const authHeader = { ...headers, ContentType: "application/json" }
+    const authHeader = { Authorization: data.token, ContentType: "application/json" }
     const response = await api.post("/checkout-sdk/sessions", {}, { headers: authHeader })
     console.log(response.data)
     session = response.data
     return session
 }
 
-export default { order, pixPay, get, auth3ds, getSession }
+export default { order, auth3ds, getSession }

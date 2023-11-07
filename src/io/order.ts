@@ -34,7 +34,7 @@ const pay = async (order: { id: number; total: number; method: PaymentMethod } &
                 let session = pagseguro.getSession()
 
                 if (!session || new Date() >= new Date(session.expires_at)) {
-                    session = await pagseguro.auth3ds()
+                    session = await pagseguro.auth3ds(order.pagseguro)
                 }
 
                 socket.emit("pagseguro:3ds", session)

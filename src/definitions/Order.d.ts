@@ -1,5 +1,9 @@
 declare type PaymentMethod = "card" | "pix" | "boleto"
 
+declare interface PagseguroCreds {
+    sandbox: boolean
+    token: string
+}
 declare interface CardOrderForm extends PayForm {
     encrypted: string
     expiry: string
@@ -28,6 +32,7 @@ declare interface PayForm {
     complement: string
     district: string
     number: string
+    pagseguro: PagseguroCreds
 }
 
 declare interface OrderForm {
