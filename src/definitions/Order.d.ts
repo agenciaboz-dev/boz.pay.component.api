@@ -46,7 +46,7 @@ declare interface OrderForm {
 }
 
 declare interface GetOrder {
-    referenceId: number
+    referenceId: string
     store: string
 }
 
