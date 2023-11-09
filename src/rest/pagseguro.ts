@@ -26,6 +26,7 @@ router.post("/webhook", async (request, response, next) => {
     console.log("WEBHOOK CALL")
     console.log(data)
     if (data.charges?.length > 0) {
+        console.log("charge")
         const io = getIoInstance()
 
         const charge = data.charges[0]
@@ -39,6 +40,8 @@ router.post("/webhook", async (request, response, next) => {
         if (data.charges[0].status == "PAID") {
             // pago
         }
+    } else {
+        console.log('no charge')
     }
 
     response.json({ message: "teste" })
