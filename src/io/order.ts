@@ -42,6 +42,7 @@ const pay = async (order: { id: number; total: number; method: PaymentMethod } &
             }
         }
 
+        await databaseHandler.order.updateTotal(order.id, order.total)
         pagseguro.order(order, socket)
     } catch (error) {
         console.log(error)

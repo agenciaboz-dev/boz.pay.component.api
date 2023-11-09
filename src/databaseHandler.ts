@@ -104,6 +104,7 @@ const order = {
         console.log("created order")
         return order
     },
+    updateTotal: async (id: number, total: number) => await prisma.order.update({ where: { id }, data: { total } }),
 }
 
 export default { order }
