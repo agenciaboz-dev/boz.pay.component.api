@@ -18,6 +18,7 @@ router.post("/", async (request: Request, response: Response) => {
 
 router.post("/new", async (request: Request, response: Response) => {
     const data: { order: OrderForm; billing: BillShippingForm; shipping: BillShippingForm; products: ProductForm[] } = request.body
+    console.log(data)
 
     try {
         console.log(`new order for ${data.order.store}`)
