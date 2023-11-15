@@ -17,7 +17,8 @@ router.post("/", async (request: Request, response: Response) => {
 })
 
 router.post("/new", async (request: Request, response: Response) => {
-    const data: { order: OrderForm; billing: BillShippingForm; shipping: BillShippingForm; products: ProductForm[] } = request.body
+    const data: { order: OrderForm; billing: BillShippingForm; shipping: BillShippingForm; products: ProductForm[]; woocommerce?: WoocommerceForm } =
+        request.body
     console.log(data)
 
     try {

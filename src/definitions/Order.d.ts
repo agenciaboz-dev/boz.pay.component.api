@@ -53,7 +53,6 @@ declare interface OrderForm {
     dateModified: string
     total: number
     customerId?: string
-    woocommerce?: WoocommerceForm
 }
 
 declare interface GetOrder {

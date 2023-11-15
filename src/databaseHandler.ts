@@ -17,7 +17,13 @@ const order = {
             where: { AND: [{ referenceId: data.referenceId.toString() }, { store: data.store }] },
             include: inclusions.order,
         }),
-    new: async (data: { order: OrderForm; billing: BillShippingForm; shipping: BillShippingForm; products: ProductForm[] }) => {
+    new: async (data: {
+        order: OrderForm
+        billing: BillShippingForm
+        shipping: BillShippingForm
+        products: ProductForm[]
+        woocommerce?: WoocommerceForm
+    }) => {
         const shippingAddress = await prisma.address.create({
             data: {
                 address: data.shipping.address.address,
@@ -77,7 +83,6 @@ const order = {
         })
 
         console.log("created billing")
-        console.log("woocommerce: " + data.order.woocommerce)
         const order = await prisma.order.create({
             data: {
                 status: data.order.status,
@@ -99,16 +104,16 @@ const order = {
                         })),
                     },
                 },
-                woocommerce: data.order.woocommerce
+                woocommerce: data.woocommerce
                     ? {
                           create: {
-                              baseUrl: data.order.woocommerce.baseUrl,
-                              consumerKey: data.order.woocommerce.consumerKey,
-                              consumerSecret: data.order.woocommerce.consumerSecret,
-                              pagseguroKey: data.order.woocommerce.pagseguroKey,
-                              pagSandboxToken: data.order.woocommerce.pagSandboxToken,
-                              pagToken: data.order.woocommerce.pagToken,
-                              sandbox: data.order.woocommerce.sandbox,
+                              baseUrl: data.woocommerce.baseUrl,
+                              consumerKey: data.woocommerce.consumerKey,
+                              consumerSecret: data.woocommerce.consumerSecret,
+                              pagseguroKey: data.woocommerce.pagseguroKey,
+                              pagSandboxToken: data.woocommerce.pagSandboxToken,
+                              pagToken: data.woocommerce.pagToken,
+                              sandbox: data.woocommerce.sandbox,
                           },
                       }
                     : undefined,
