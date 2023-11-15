@@ -7,6 +7,7 @@ const inclusions = {
         billing: { include: { address: true, personalData: true } },
         shipping: { include: { address: true, personalData: true } },
         products: true,
+        woocommerce: true,
     },
 }
 
@@ -97,6 +98,19 @@ const order = {
                         })),
                     },
                 },
+                woocommerce: data.order.woocommerce
+                    ? {
+                          create: {
+                              baseUrl: data.order.woocommerce.baseUrl,
+                              consumerKey: data.order.woocommerce.consumerKey,
+                              consumerSecret: data.order.woocommerce.consumerSecret,
+                              pagseguroKey: data.order.woocommerce.pagseguroKey,
+                              pagSandboxToken: data.order.woocommerce.pagSandboxToken,
+                              pagToken: data.order.woocommerce.pagToken,
+                              sandbox: data.order.woocommerce.sandbox,
+                          },
+                      }
+                    : undefined,
             },
             include: inclusions.order,
         })
@@ -105,6 +119,7 @@ const order = {
         return order
     },
     updateTotal: async (id: number, total: number) => await prisma.order.update({ where: { id }, data: { total } }),
+    updateStatus: async (status: string, id: number) => await prisma.order.update({ data: { status }, where: { id }, include: inclusions.order }),
 }
 
 export default { order }

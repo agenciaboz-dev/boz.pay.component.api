@@ -3,6 +3,7 @@ import { PrismaClient } from '@prisma/client'
 import { getIoInstance } from "../io/socket"
 import { writeFileSync } from "fs"
 import woocommerce from "../api/woocommerce"
+import databaseHandler from "../databaseHandler"
 const router = express.Router()
 const prisma = new PrismaClient()
 
@@ -34,14 +35,15 @@ router.post("/webhook", async (request, response, next) => {
 
         writeFileSync(`logs/webhook-${data.reference_id}.txt`, JSON.stringify(data, null, 4))
 
-        await prisma.order.update({ data: { status: charge.status }, where: { id: Number(data.reference_id) } })
+        const order = await databaseHandler.order.updateStatus(charge.status, Number(data.reference_id))
+
         io.emit("pagseguro:paid", { id: Number(data.reference_id), charge })
 
         if (data.charges[0].status == "PAID") {
             // pago
         }
     } else {
-        console.log('no charge')
+        console.log("no charge")
     }
 
     response.json({ message: "teste" })

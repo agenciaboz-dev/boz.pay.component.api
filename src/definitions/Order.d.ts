@@ -35,6 +35,16 @@ declare interface PayForm {
     pagseguro: PagseguroCreds
 }
 
+declare interface WoocommerceForm {
+    pagToken: string
+    pagSandboxToken: string
+    pagseguroKey: string
+    baseUrl: string
+    consumerKey: string
+    consumerSecret: string
+    sandbox: boolean
+}
+
 declare interface OrderForm {
     referenceId: string
     store: string
@@ -43,6 +53,7 @@ declare interface OrderForm {
     dateModified: string
     total: number
     customerId?: string
+    woocommerce?: WoocommerceForm
 }
 
 declare interface GetOrder {

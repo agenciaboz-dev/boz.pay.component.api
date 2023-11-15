@@ -8,6 +8,20 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
+model Woocommerce {
+    id              Int         @id @default(autoincrement())
+    orderId         Int         @unique
+    pagToken        String      @db.Text
+    pagSandboxToken String      @db.Text
+    pagseguroKey    String      @db.Text
+    baseUrl         String
+    consumerKey     String      @db.Text
+    consumerSecret  String      @db.Text
+    sandbox         Boolean
+
+    order           Order       @relation(fields: [orderId], references: [id])
+}
+
 model Order {
     id              Int         @id @default(autoincrement())
     referenceId     String
@@ -27,6 +41,8 @@ model Order {
     shipping        Shipping     @relation(fields: [shippingId], references: [id])
 
     products        Product[]
+
+    woocommerce     Woocommerce?
 
 }
 
