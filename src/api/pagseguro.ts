@@ -1,5 +1,5 @@
 import axios from "axios"
-import { Billing, Order, PrismaClient, Woocommerce } from "@prisma/client"
+import { Billing, Order, PrismaClient } from "@prisma/client"
 import { existsSync, mkdirSync, writeFileSync } from "fs"
 import { Socket } from "socket.io"
 import { getDueDate } from "../scripts/formatDate"
@@ -30,17 +30,12 @@ let session: PagseguroSession | undefined
 
 const getSession = () => session
 
-const order = (
-    order: { id: number; total: number; method: PaymentMethod } & (PayForm | CardOrderForm),
-    socket: Socket,
-    woocommerce: Woocommerce | null
-) => {
-    if (woocommerce?.sandbox) woocommerce.pagToken = woocommerce?.pagSandboxToken
+const order = (order: { id: number; total: number; method: PaymentMethod } & (PayForm | CardOrderForm), socket: Socket) => {
     const api = axios.create({
-        baseURL: woocommerce?.sandbox || order.pagseguro.sandbox ? "https://sandbox.api.pagseguro.com" : "https://api.pagseguro.com",
+        baseURL: order.pagseguro.sandbox ? "https://sandbox.api.pagseguro.com" : "https://api.pagseguro.com",
         timeout: 1000 * 10,
     })
-    const headers = { Authorization: woocommerce?.pagToken || order.pagseguro.token }
+    const headers = { Authorization: order.pagseguro.token }
 
     console.log(order)
     const pag_order: PagseguroOrder = {
