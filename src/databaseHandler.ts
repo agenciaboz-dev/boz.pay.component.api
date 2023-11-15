@@ -77,6 +77,7 @@ const order = {
         })
 
         console.log("created billing")
+        console.log("woocommerce: " + data.order.woocommerce)
         const order = await prisma.order.create({
             data: {
                 status: data.order.status,
