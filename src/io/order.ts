@@ -32,18 +32,19 @@ const pay = async (order: { id: number; total: number; method: PaymentMethod } &
         if (order.method == "card") {
             if ((order as CardOrderForm).type == "debit" && !(order as CardOrderForm).auth) {
                 let session = pagseguro.getSession()
-
+                
                 if (!session || new Date() >= new Date(session.expires_at)) {
                     session = await pagseguro.auth3ds(order.pagseguro)
                 }
-
+                
                 socket.emit("pagseguro:3ds", session)
                 return
             }
         }
-
+        
         await databaseHandler.order.updateTotal(order.id, Number(order.total))
-        pagseguro.order(order, socket)
+        const woocommerce = await databaseHandler.order.getWoocommerce(order.id)
+        pagseguro.order(order, socket, woocommerce)
     } catch (error) {
         console.log(error)
         socket.emit("order:pay:error", error)

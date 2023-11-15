@@ -126,6 +126,7 @@ const order = {
     },
     updateTotal: async (id: number, total: number) => await prisma.order.update({ where: { id }, data: { total } }),
     updateStatus: async (status: string, id: number) => await prisma.order.update({ data: { status }, where: { id }, include: inclusions.order }),
+    getWoocommerce: async (id: number) => await prisma.woocommerce.findFirst({ where: { orderId: id } }),
 }
 
 export default { order }
