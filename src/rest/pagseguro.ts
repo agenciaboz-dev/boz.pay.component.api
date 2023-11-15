@@ -42,7 +42,7 @@ router.post("/webhook", async (request, response, next) => {
         if (data.charges[0].status == "PAID") {
             // pago
             if (order.woocommerce) {
-                await woocommerce.updateOrderStatus(order.referenceId, charge.status, order.woocommerce)
+                await woocommerce.updateOrderStatus(order.referenceId, "processing", order.woocommerce)
             }
         }
     } else {
