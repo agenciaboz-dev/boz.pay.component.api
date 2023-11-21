@@ -24,9 +24,9 @@ app.use("/static", express.static("static"))
 try {
     const server = https.createServer(
         {
-            key: fs.readFileSync("/etc/letsencrypt/live/app.agenciaboz.com.br/privkey.pem", "utf8"),
-            cert: fs.readFileSync("/etc/letsencrypt/live/app.agenciaboz.com.br/cert.pem", "utf8"),
-            ca: fs.readFileSync("/etc/letsencrypt/live/app.agenciaboz.com.br/chain.pem", "utf8"),
+            key: fs.readFileSync("/etc/letsencrypt/live/agencyboz.com/privkey.pem", "utf8"),
+            cert: fs.readFileSync("/etc/letsencrypt/live/agencyboz.com/cert.pem", "utf8"),
+            ca: fs.readFileSync("/etc/letsencrypt/live/agencyboz.com/fullchain.pem", "utf8"),
         },
         app
     )
