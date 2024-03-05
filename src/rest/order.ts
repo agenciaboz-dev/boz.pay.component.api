@@ -33,4 +33,11 @@ router.post("/new", async (request: Request, response: Response) => {
     }
 })
 
+router.post("/status", async (request: Request, response: Response) => {
+    const data = request.body as { status: string; id: number }
+
+    const order = await databaseHandler.order.updateStatus(data.status, Number(data.id))
+    response.json(order)
+})
+
 export default router
