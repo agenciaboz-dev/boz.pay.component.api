@@ -6,9 +6,11 @@ const router = express.Router()
 const prisma = new PrismaClient()
 
 router.post("/", async (request: Request, response: Response) => {
-    const data: { store: string; referenceId: string } = request.body
+    const data: { store: string; referenceId: string; id?: number } = request.body
     try {
+        console.log(data)
         const order = await databaseHandler.order.find(data)
+        console.log({ order })
         response.json(order)
     } catch (error) {
         console.log(error)

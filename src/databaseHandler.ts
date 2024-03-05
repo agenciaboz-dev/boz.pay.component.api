@@ -14,7 +14,7 @@ const inclusions = {
 const order = {
     find: async (data: GetOrder) =>
         await prisma.order.findFirst({
-            where: { AND: [{ referenceId: data.referenceId.toString() }, { store: data.store }] },
+            where: { AND: [{ OR: [{ id: data.id }, { referenceId: data.referenceId.toString() }] }, { store: data.store }] },
             include: inclusions.order,
         }),
     new: async (data: {

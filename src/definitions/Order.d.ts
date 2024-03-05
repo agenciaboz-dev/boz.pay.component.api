@@ -58,6 +58,7 @@ declare interface OrderForm {
 declare interface GetOrder {
     referenceId: string
     store: string
+    id?: number
 }
 
 declare interface PersonalDataForm {
