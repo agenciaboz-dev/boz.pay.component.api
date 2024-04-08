@@ -150,8 +150,10 @@ const order = (order: { id: number; total: number; method: PaymentMethod } & (Pa
 }
 
 const auth3ds = async (data: PagseguroCreds) => {
+    console.log(`auth3sd:`)
+    console.log(data)
     const api = axios.create({
-        baseURL: data.sandbox ? "https://sandbox.api.pagseguro.com" : "https://api.pagseguro.com",
+        baseURL: data.sandbox ? "https://sandbox.sdk.pagseguro.com" : "https://sdk.pagseguro.com",
         timeout: 1000 * 10,
     })
 
