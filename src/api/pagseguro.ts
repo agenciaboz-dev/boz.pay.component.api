@@ -3,6 +3,7 @@ import { Billing, Order, PrismaClient } from "@prisma/client"
 import { existsSync, mkdirSync, writeFileSync } from "fs"
 import { Socket } from "socket.io"
 import { getDueDate } from "../scripts/formatDate"
+import { homologationLog } from "../scripts/logOrder"
 
 const prisma = new PrismaClient()
 
@@ -131,6 +132,13 @@ const order = (order: { id: number; total: number; method: PaymentMethod } & (Pa
 
             if (!existsSync("logs")) {
                 mkdirSync("logs")
+            }
+
+            if (order.pagseguro.sandbox) {
+                homologationLog(order.pagseguro.token, order, response.data).catch((error) => {
+                    console.log("error logging homologation files")
+                    console.log(error)
+                })
             }
 
             writeFileSync(`logs/new_order-${order.id}.txt`, JSON.stringify({ request: order || "undefined", response: response.data }, null, 4))
